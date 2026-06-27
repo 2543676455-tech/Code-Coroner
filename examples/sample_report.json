@@ -1,0 +1,116 @@
+{
+  "task_id": "demo-0001",
+  "repository_url": "https://github.com/example/phoenix-agent",
+  "mode": "roast",
+  "generated_at": "2026-06-21T08:00:00Z",
+  "llm_enabled": false,
+  "repository_metadata": {
+    "name": "phoenix-agent",
+    "owner": "example",
+    "url": "https://github.com/example/phoenix-agent",
+    "default_branch": "main",
+    "commit_sha": "9f10a22d3b62c2b35c2f86e1d9f7d6080a4c183b",
+    "file_count": 42,
+    "total_bytes": 184320,
+    "python_files": 12,
+    "lines_of_python": 1680
+  },
+  "project_structure": {
+    "top_level_entries": ["README.md", "app", "tests", "Dockerfile", "docker-compose.yml"],
+    "package_directories": ["app", "app/agents"],
+    "entrypoints": ["app/main.py"],
+    "dependency_files": ["pyproject.toml", "uv.lock"],
+    "configuration_files": ["Dockerfile", "docker-compose.yml", "pyproject.toml"],
+    "test_files": ["tests/test_api.py", "tests/test_graph.py"],
+    "largest_modules": [
+      {"path": "app/graph.py", "lines": 314},
+      {"path": "app/main.py", "lines": 188}
+    ],
+    "max_module_lines": 314,
+    "architecture_notes": ["The project is split into API, agent, and test modules."]
+  },
+  "claims": [
+    {
+      "id": "claim_001",
+      "claim": "支持 Docker 一键部署",
+      "category": "deployment",
+      "verification_rules": ["存在 Dockerfile", "存在 compose 配置", "存在启动命令"],
+      "status": "verified",
+      "confidence": 0.91,
+      "evidence": [{"type": "config", "path": "Dockerfile", "line_start": 1, "line_end": 18, "excerpt": "FROM python:3.12-slim", "description": "Container image and startup command exist"}],
+      "reason": "Dockerfile and Compose service both point to the API entrypoint."
+    },
+    {
+      "id": "claim_002",
+      "claim": "包含完整测试",
+      "category": "testing",
+      "verification_rules": ["存在测试目录", "存在 pytest 配置", "测试可执行"],
+      "status": "partial",
+      "confidence": 0.72,
+      "evidence": [{"type": "test", "path": "tests/test_api.py", "line_start": 1, "line_end": 20, "excerpt": "def test_health(client): ...", "description": "API smoke tests exist"}],
+      "reason": "Tests run, but critical agent branches are not covered."
+    },
+    {
+      "id": "claim_003",
+      "claim": "支持多 Agent",
+      "category": "agents",
+      "verification_rules": ["存在多个 Agent 定义或编排图"],
+      "status": "verified",
+      "confidence": 0.88,
+      "evidence": [{"type": "code", "path": "app/graph.py", "line_start": 14, "line_end": 31, "excerpt": "graph.add_node(\"planner\", planner)", "description": "Multiple named graph nodes are wired"}],
+      "reason": "Planner, researcher, and writer nodes exchange typed state."
+    },
+    {
+      "id": "claim_004",
+      "claim": "支持向量检索",
+      "category": "retrieval",
+      "verification_rules": ["存在向量数据库或 embedding 实现"],
+      "status": "unsupported",
+      "confidence": 0.84,
+      "evidence": [],
+      "reason": "No vector store dependency, schema, or retrieval call was found."
+    },
+    {
+      "id": "claim_005",
+      "claim": "支持生产环境",
+      "category": "production",
+      "verification_rules": ["存在部署配置", "存在日志和健康检查"],
+      "status": "partial",
+      "confidence": 0.68,
+      "evidence": [{"type": "code", "path": "app/main.py", "line_start": 22, "line_end": 24, "excerpt": "@app.get(\"/health\")", "description": "Health endpoint exists"}],
+      "reason": "Health and logs exist, but CI and secret handling need work."
+    }
+  ],
+  "engineering_checks": [
+    {"id": "readme", "name": "README", "status": "pass", "weight": 1, "evidence": [], "message": "README detected."},
+    {"id": "license", "name": "License", "status": "pass", "weight": 1, "evidence": [], "message": "MIT license detected."},
+    {"id": "tests", "name": "Test suite", "status": "pass", "weight": 1, "evidence": [], "message": "pytest suite detected."},
+    {"id": "dockerfile", "name": "Dockerfile", "status": "pass", "weight": 1, "evidence": [], "message": "Dockerfile detected."},
+    {"id": "compose", "name": "Docker Compose", "status": "pass", "weight": 1, "evidence": [], "message": "Compose detected."},
+    {"id": "env_example", "name": "Environment example", "status": "fail", "weight": 1, "evidence": [], "message": "No environment template found."},
+    {"id": "ci", "name": "CI workflow", "status": "fail", "weight": 1, "evidence": [], "message": "No CI workflow found."},
+    {"id": "typing", "name": "Type checking", "status": "pass", "weight": 1, "evidence": [], "message": "mypy configuration detected."},
+    {"id": "logging", "name": "Structured logging", "status": "pass", "weight": 1, "evidence": [], "message": "structlog detected."},
+    {"id": "health", "name": "Health check", "status": "pass", "weight": 1, "evidence": [], "message": "Health endpoint detected."}
+  ],
+  "security_findings": [
+    {"rule_id": "SEC010", "title": "Overly broad CORS", "severity": "medium", "path": "app/main.py", "line": 12, "excerpt": "allow_origins=[\"*\"]", "recommendation": "Restrict CORS to trusted origins."},
+    {"rule_id": "SEC011", "title": "Debug enabled by default", "severity": "medium", "path": "app/config.py", "line": 7, "excerpt": "debug = True", "recommendation": "Disable debug mode by default."}
+  ],
+  "test_result": {
+    "status": "passed",
+    "exit_code": 0,
+    "duration_seconds": 18.4,
+    "log": "18 passed, 2 skipped in 4.21s",
+    "reason": "Tests executed in a restricted Docker container."
+  },
+  "scores": {
+    "readme_credibility": {"score": 73, "additions": ["Three claims have implementation evidence"], "deductions": ["Vector retrieval is unsupported"]},
+    "production_readiness": {"score": 62, "additions": ["Tests and health check exist"], "deductions": ["CI and environment template missing", "Two medium security findings"]},
+    "learning_value": {"score": 81, "additions": ["Clear modular graph structure", "Runnable tests"], "deductions": ["Retrieval path is only documented"]},
+    "wrapper_index": {"score": 28, "additions": ["Some external model API dependence"], "deductions": ["Real graph, tools, tests, and state management reduce wrapper likelihood"]}
+  },
+  "summary": "The repository has a real multi-node implementation and a runnable test suite. Deployment basics are present, while CI, configuration hygiene, and the advertised retrieval feature require work.",
+  "roast": "README 已经把向量检索请上台了，代码却没给它买票。先补向量存储和检索测试，再让这个功能出现在宣传位。",
+  "errors": []
+}

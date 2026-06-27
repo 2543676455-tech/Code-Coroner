@@ -1,0 +1,53 @@
+[project]
+name = "repojudge"
+version = "0.1.0"
+description = "Evidence-first AI agent for auditing public Python repositories"
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+dependencies = [
+  "fastapi>=0.115,<1",
+  "gitpython>=3.1.44,<4",
+  "httpx>=0.28,<1",
+  "langgraph>=0.4,<1",
+  "pydantic-settings>=2.8,<3",
+  "sqlalchemy>=2.0.38,<3",
+  "structlog>=25.1,<26",
+  "uvicorn[standard]>=0.34,<1",
+]
+
+[dependency-groups]
+dev = [
+  "mypy>=1.15,<2",
+  "pytest>=8.3,<9",
+  "pytest-asyncio>=0.25,<1",
+  "ruff>=0.11,<1",
+]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+pythonpath = ["backend"]
+testpaths = ["backend/tests"]
+addopts = "-q"
+norecursedirs = ["fixtures"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 120
+exclude = ["frontend", ".venv", ".uv-cache", "backend/tests/fixtures"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.12"
+plugins = ["pydantic.mypy"]
+strict = true
+exclude = ["backend/tests"]
+
+[[tool.mypy.overrides]]
+module = ["git.*"]
+ignore_missing_imports = true

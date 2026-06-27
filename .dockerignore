@@ -1,0 +1,16 @@
+._*
+**/._*
+.venv
+.uv-cache
+.mypy_cache
+.pytest_cache
+.ruff_cache
+__pycache__
+**/__pycache__
+frontend/node_modules
+frontend/dist
+repojudge.db
+*.db
+*.log
+.git
+.env
